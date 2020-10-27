@@ -1,0 +1,41 @@
+﻿@using kredi.Models;
+@model kredi.Models.Movements
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@using kredi.Controllers;
+@{
+    Layout = null;
+    SI642Entities db = new SI642Entities();
+}
+
+<div style="text-align:center">
+    <label class="small mb-1" for="inputEmailAddress" style="font-size: 45px;display:inline-block;vertical-align:middle;margin-top: 25px;
+                                line-height:normal;text-align:center"><strong>@ViewBag.ToPay @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency</strong></label>
+                            </div>
+                            <div style="text-align:center">
+                                <label class="small mb-1" for="inputEmailAddress" style="font-size: 15px;display:inline-block;vertical-align:middle;
+                                line-height:normal;text-align:center">dueda por pagar</label>
+                            </div>
+                            <br />
+                            <br />
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <!-- Form Group (first name)-->
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="inputFirstName">Monto</label>
+                                        @Html.EditorFor(model => model.movementValue, new { htmlAttributes = new { @class = "form-control form-control-solid py-4", @type = "number", @step = "any" } })
+                                        @Html.ValidationMessageFor(model => model.movementValue, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- Form Group (last name)-->
+                                    <div class="form-group">
+
+                                        <label class="small mb-1" for="inputLastName">Moneda</label>
+                                        @Html.DropDownList("LinesOfCredit_id", null, htmlAttributes: new { @class = "form-control form-control-solid", @style = "color: black;" })
+                                        @Html.ValidationMessageFor(model => model.LinesOfCredit_id, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                           
+

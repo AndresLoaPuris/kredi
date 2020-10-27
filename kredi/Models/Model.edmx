@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SI642Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="LinesOfCredit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="customer" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="amount" Type="real" Nullable="false" />
+          <Property Name="currency" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="creationDate" Type="date" Nullable="false" />
+          <Property Name="rateType" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="rateValue" Type="real" Nullable="false" />
+          <Property Name="capitalization" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Movements">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="motionDay" Type="date" Nullable="false" />
+          <Property Name="description" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="movementValue" Type="real" Nullable="false" />
+          <Property Name="isMoneyWithdrawal" Type="bit" Nullable="false" />
+          <Property Name="balance" Type="real" Nullable="false" />
+          <Property Name="LinesOfCredit_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="names" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="surnames" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="nameOfThePlace" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <Association Name="LinesOfCredit_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="LinesOfCredit" Type="Self.LinesOfCredit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="LinesOfCredit">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Movements_LinesOfCredit">
+          <End Role="LinesOfCredit" Type="Self.LinesOfCredit" Multiplicity="1" />
+          <End Role="Movements" Type="Self.Movements" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LinesOfCredit">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Movements">
+              <PropertyRef Name="LinesOfCredit_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SI642ModelStoreContainer">
+          <EntitySet Name="LinesOfCredit" EntityType="Self.LinesOfCredit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Movements" EntityType="Self.Movements" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="LinesOfCredit_Users" Association="Self.LinesOfCredit_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinesOfCredit" EntitySet="LinesOfCredit" />
+          </AssociationSet>
+          <AssociationSet Name="Movements_LinesOfCredit" Association="Self.Movements_LinesOfCredit">
+            <End Role="LinesOfCredit" EntitySet="LinesOfCredit" />
+            <End Role="Movements" EntitySet="Movements" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SI642Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="LinesOfCredit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="customer" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="amount" Type="Single" Nullable="false" />
+          <Property Name="currency" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="creationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="rateType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="rateValue" Type="Single" Nullable="false" />
+          <Property Name="capitalization" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="Self.LinesOfCredit_Users" FromRole="LinesOfCredit" ToRole="Users" />
+          <NavigationProperty Name="Movements" Relationship="Self.Movements_LinesOfCredit" FromRole="LinesOfCredit" ToRole="Movements" />
+        </EntityType>
+        <EntityType Name="Movements">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="motionDay" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="movementValue" Type="Single" Nullable="false" />
+          <Property Name="isMoneyWithdrawal" Type="Boolean" Nullable="false" />
+          <Property Name="balance" Type="Single" Nullable="false" />
+          <Property Name="LinesOfCredit_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="LinesOfCredit" Relationship="Self.Movements_LinesOfCredit" FromRole="Movements" ToRole="LinesOfCredit" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="names" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="surnames" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="nameOfThePlace" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="LinesOfCredit" Relationship="Self.LinesOfCredit_Users" FromRole="Users" ToRole="LinesOfCredit" />
+        </EntityType>
+        <Association Name="LinesOfCredit_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="LinesOfCredit" Type="Self.LinesOfCredit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="LinesOfCredit">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Movements_LinesOfCredit">
+          <End Role="LinesOfCredit" Type="Self.LinesOfCredit" Multiplicity="1" />
+          <End Role="Movements" Type="Self.Movements" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LinesOfCredit">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Movements">
+              <PropertyRef Name="LinesOfCredit_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SI642Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="LinesOfCredit" EntityType="Self.LinesOfCredit" />
+          <EntitySet Name="Movements" EntityType="Self.Movements" />
+          <EntitySet Name="Users" EntityType="Self.Users" />
+          <AssociationSet Name="LinesOfCredit_Users" Association="Self.LinesOfCredit_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="LinesOfCredit" EntitySet="LinesOfCredit" />
+          </AssociationSet>
+          <AssociationSet Name="Movements_LinesOfCredit" Association="Self.Movements_LinesOfCredit">
+            <End Role="LinesOfCredit" EntitySet="LinesOfCredit" />
+            <End Role="Movements" EntitySet="Movements" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SI642ModelStoreContainer" CdmEntityContainer="SI642Entities">
+          <EntitySetMapping Name="LinesOfCredit">
+            <EntityTypeMapping TypeName="SI642Model.LinesOfCredit">
+              <MappingFragment StoreEntitySet="LinesOfCredit">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="customer" ColumnName="customer" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+                <ScalarProperty Name="currency" ColumnName="currency" />
+                <ScalarProperty Name="creationDate" ColumnName="creationDate" />
+                <ScalarProperty Name="rateType" ColumnName="rateType" />
+                <ScalarProperty Name="rateValue" ColumnName="rateValue" />
+                <ScalarProperty Name="capitalization" ColumnName="capitalization" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Movements">
+            <EntityTypeMapping TypeName="SI642Model.Movements">
+              <MappingFragment StoreEntitySet="Movements">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="motionDay" ColumnName="motionDay" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="movementValue" ColumnName="movementValue" />
+                <ScalarProperty Name="isMoneyWithdrawal" ColumnName="isMoneyWithdrawal" />
+                <ScalarProperty Name="balance" ColumnName="balance" />
+                <ScalarProperty Name="LinesOfCredit_id" ColumnName="LinesOfCredit_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="SI642Model.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="names" ColumnName="names" />
+                <ScalarProperty Name="surnames" ColumnName="surnames" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="nameOfThePlace" ColumnName="nameOfThePlace" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

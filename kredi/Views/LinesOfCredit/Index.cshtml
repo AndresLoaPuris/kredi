@@ -1,0 +1,279 @@
+﻿@using kredi.Controllers;
+@using kredi.Models;
+
+
+@{
+    Layout = null;
+    SI642Entities db = new SI642Entities();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" />
+    <meta name="author" />
+    <title></title>
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.png" />
+    <script data-search-pseudo-elements defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.24.1/feather.min.js" crossorigin="anonymous"></script>
+
+</head>
+<body class="nav-fixed">
+
+    <nav class="topnav navbar navbar-expand shadow navbar-light bg-white" id="sidenavAccordion">
+        <a class="navbar-brand d-none d-sm-block" href="@Url.Action("Index", "LinesOfCredit", new { id = LinesOfCreditController.staticId })">&nbsp;&nbsp; @db.LinesOfCredit.Find(LinesOfCreditController.staticId).customer</a>
+        <button class="btn btn-icon btn-transparent-dark order-1 order-lg-0 mr-lg-2" id="sidebarToggle" href="#"><i data-feather="menu"></i></button>
+        <ul class="navbar-nav align-items-center ml-auto">
+
+
+            <li class="nav-item dropdown no-caret mr-3 dropdown-user">
+                <span class="mr-2 d-none d-lg-inline text-gray-900 medium">@User.Identity.Name &nbsp;</span>
+                <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img class="img-fluid" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ95GrFuesVVuyyfXOSimzstFtyiQ594yP-DNe0UfbUs_kyqqrM&usqp=CAU" /></a>
+                <div class="dropdown-menu dropdown-menu-right border-0 shadow animated--fade-in-up" aria-labelledby="navbarDropdownUserImage">
+                    <h6 class="dropdown-header d-flex align-items-center">
+                        <img class="dropdown-user-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ95GrFuesVVuyyfXOSimzstFtyiQ594yP-DNe0UfbUs_kyqqrM&usqp=CAU">
+                        <div class="dropdown-user-details">
+                            <div class="dropdown-user-details-name">@User.Identity.Name</div>
+                            <div class="dropdown-user-details-email">@AuthController.staticEmail</div>
+                        </div>
+                    </h6>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href='@Url.Action("Index", "Home")'><div class="dropdown-item-icon"><i data-feather="users"></i></div>Clientes</a>
+                    <a class="dropdown-item" href='@Url.Action("Logout", "Auth")'><div class="dropdown-item-icon"><i data-feather="log-out"></i></div>Logout</a>
+                </div>
+            </li>
+
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sidenav shadow-right sidenav-light">
+                <div class="sidenav-menu">
+                    <div class="nav accordion" id="accordionSidenav">
+                        <br />
+                        <a class="nav-link active" href="#!">
+                            <div class="nav-link-icon"><i data-feather="archive"></i></div>
+                            Reporte de Pagos
+                        </a>
+                        <br />
+                        <a class="nav-link active" href="#!">
+                            <div class="nav-link-icon"><i data-feather="layers"></i></div>
+                            Reporte de Saldos
+                        </a>
+                    </div>
+                </div>
+                <div class="sidenav-footer">
+                    <div class="sidenav-footer-content">
+                        <div class="sidenav-footer-subtitle">Inició sesión como:</div>
+                        <div class="sidenav-footer-title">@User.Identity.Name</div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+
+
+
+
+            <main>
+
+                <div class="page-header pb-10 page-header-dark bg-gradient-primary-to-secondary">
+                    <div class="container-fluid">
+                        <div class="page-header-content" style="text-align:center">
+                            <br />
+                            <br />
+
+                            @if (db.Movements.Where(x => x.LinesOfCredit_id == LinesOfCreditController.staticId).FirstOrDefault() != null)
+                            {
+                        <p class="page-header-title" style="font-size: 80px;display:inline-block; vertical-align:middle;line-height:normal;">
+                            @( (db.LinesOfCredit.Find(LinesOfCreditController.staticId).amount + db.Movements.Where(x => x.LinesOfCredit_id == LinesOfCreditController.staticId && x.id == db.Movements.Where(p => p.LinesOfCredit_id == LinesOfCreditController.staticId).Max(p => p.id)).FirstOrDefault().balance).ToString("0.00") ) @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+                        </p>
+                            }
+                            else
+                            {
+                                <p class="page-header-title" style="font-size: 80px;display:inline-block; vertical-align:middle;line-height:normal;">
+                                    @db.LinesOfCredit.Find(LinesOfCreditController.staticId).amount.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+
+                                </p>
+                            }
+                            <div style="text-align:center">
+                                <p class="page-header-title" style="font-size: 20px;display:inline-block;vertical-align:middle;margin-top: 10px;
+                                line-height:normal;">Saldo Disponible</p>
+
+                            </div>
+                            <br />
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="container-fluid mt-n10">
+                    <div class="row">
+                        <div class="col-lg-4 col-xl-3 mb-4">
+
+                            <br />
+                            <!-- Dashboard info widget 1-->
+                            <div class="card border-top-0 border-bottom-0 border-right-0 border-left-lg border-success  mb-4">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <div class="small font-weight-bold text-success mb-1">Precio del Dólar</div>
+                                            <div class="h5">1 USD &nbsp;<i data-feather="chevrons-right"></i>&nbsp; @ViewBag.Dollar.ToString("0.00") PEN</div>
+
+                                        </div>
+                                        <div class="ml-2"><svg class="svg-inline--fa fa-dollar-sign fa-w-9 fa-2x text-gray-200" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="dollar-sign" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 512" data-fa-i2svg=""><path fill="currentColor" d="M209.2 233.4l-108-31.6C88.7 198.2 80 186.5 80 173.5c0-16.3 13.2-29.5 29.5-29.5h66.3c12.2 0 24.2 3.7 34.2 10.5 6.1 4.1 14.3 3.1 19.5-2l34.8-34c7.1-6.9 6.1-18.4-1.8-24.5C238 74.8 207.4 64.1 176 64V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48h-2.5C45.8 64-5.4 118.7.5 183.6c4.2 46.1 39.4 83.6 83.8 96.6l102.5 30c12.5 3.7 21.2 15.3 21.2 28.3 0 16.3-13.2 29.5-29.5 29.5h-66.3C100 368 88 364.3 78 357.5c-6.1-4.1-14.3-3.1-19.5 2l-34.8 34c-7.1 6.9-6.1 18.4 1.8 24.5 24.5 19.2 55.1 29.9 86.5 30v48c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-48.2c46.6-.9 90.3-28.6 105.7-72.7 21.5-61.6-14.6-124.8-72.5-141.7z"></path></svg><!-- <i class="fas fa-dollar-sign fa-2x text-gray-200"></i> --></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card bg-dark o-visible mb-4">
+                                <div class="card-body">
+                                    <h4 class="text-white">Registro</h4>
+                                    <p class="text-white-50">Aqui puede apuntar todos los gastos y pagos realizados por el cliente.</p>
+                                    <img class="float-left" src="/assets/img/drawkit-developer-woman-flush.svg" style="width: 8rem; margin-left: -2.5rem; margin-bottom: -5.5rem;">
+                                </div>
+                                <div class="card-footer bg-transparent pt-0 border-0 text-right"><a class="btn btn-dark"></a></div>
+                            </div>
+
+
+
+
+
+
+
+                        </div>
+                        <div class="col-lg-4 col-xl-9 mb-4">
+                            <div class="card card-header-actions mx-auto">
+                                <div class="card-header" style="height: 70px;">
+                                    <strong>Últimas 05 actividades</strong>
+                                    <div>
+                                        <button class="btn btn-pink" type="button" data-toggle="modal" data-target="#registrarGasto" style="font-size: 14px;">
+                                            <i data-feather="upload"></i> &nbsp; Gasto
+                                        </button>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#registrarPago" style="font-size: 14px;">
+                                            <i data-feather="download"></i> &nbsp; Pago
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="timeline">
+                                        @foreach (var item in ViewBag.Movements)
+                                        {
+                                            if (item.isMoneyWithdrawal)
+                                            {
+                                                <div class="timeline-item">
+                                                    <div class="timeline-item-marker">
+                                                        <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.motionDay.ToShortDateString()</div>
+                                                        &nbsp;&nbsp;
+                                                        <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
+                                                            <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="timeline-item-content" style="font-size: 15px;color: black;">
+                                                        &nbsp;&nbsp;<strong>
+                                                            consumo
+                                                            &nbsp;&nbsp; @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+                                                        </strong>
+                                                        &nbsp;&nbsp; &nbsp;&nbsp;de @item.description
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="timeline-item">
+                                                    <div class="timeline-item-marker">
+                                                        <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.motionDay.ToShortDateString()</div>
+                                                        &nbsp;&nbsp;
+                                                        <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
+                                                            <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="timeline-item-content" style="font-size: 15px;color: black;">
+                                                        &nbsp;&nbsp;<strong>
+                                                            abono
+                                                            &nbsp;&nbsp; @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+                                                        </strong>
+                                                        &nbsp;&nbsp; &nbsp;&nbsp;@item.description
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </main>
+
+        </div>
+        @using (Ajax.BeginForm("RegisterExpenditure", "LinesOfCredit", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmExp" }))
+        {
+            <div class="modal fade" id="registrarGasto" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel"><strong>Registrar Gasto</strong></h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">×</span></button>
+                        </div>
+                        <div class="modal-body" id="frmExp">
+                            @Html.Partial("_RegisterExpenditure")
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">Cancelar</button>
+                            <button class="btn btn-primary" type="submit">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @using (Ajax.BeginForm("RegisterPayment", "LinesOfCredit", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmPay" }))
+        {
+            <div class="modal fade" id="registrarPago" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel"><strong>Registrar Pago</strong></h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">×</span></button>
+                        </div>
+                        <div class="modal-body" id="frmPay">
+                            @Html.Partial("_RegisterPayment")
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">Cancelar</button>
+                            <button class="btn btn-primary" type="submit">Confirmar</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        }
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="~/js/scripts.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/datatables-demo.js"></script>
+        <script src="~/js/sb-customizer.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+</body>
+
+</html>

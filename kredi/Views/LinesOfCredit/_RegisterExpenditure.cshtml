@@ -1,0 +1,39 @@
+﻿
+@model kredi.Models.Movements
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+
+<div class="form-group">
+    <label class="small mb-1" for="inputEmailAddress">Descripcion</label>
+    @Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control form-control-solid py-4", @type = "text" } })
+    @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
+</div>
+<div class="form-row">
+    <div class="col-md-6">
+        <!-- Form Group (first name)-->
+        <div class="form-group">
+            <label class="small mb-1" for="inputFirstName">Monto</label>
+            @Html.EditorFor(model => model.movementValue, new { htmlAttributes = new { @class = "form-control form-control-solid py-4", @type = "number", @step = "any" } })
+            @Html.ValidationMessageFor(model => model.movementValue, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-6">
+        <!-- Form Group (last name)-->
+        <div class="form-group">
+            <label class="small mb-1" for="inputLastName">Moneda</label>
+            @Html.DropDownList("LinesOfCredit_id", null, htmlAttributes: new { @class = "form-control form-control-solid", @style = "color: black;" })
+            @Html.ValidationMessageFor(model => model.LinesOfCredit_id, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="small mb-1" for="inputLastName">Fecha</label>
+    @Html.EditorFor(model => model.motionDay, new { htmlAttributes = new { @class = "form-control form-control-solid py-4", @type = "date" } })
+    @Html.ValidationMessageFor(model => model.motionDay, "", new { @class = "text-danger" })
+</div>
+
+
+
+
