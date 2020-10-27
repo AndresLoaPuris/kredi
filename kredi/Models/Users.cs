@@ -11,8 +11,9 @@ namespace kredi.Models
 {
     using System;
     using System.Collections.Generic;
-    
-    public partial class Users
+	using System.ComponentModel.DataAnnotations;
+
+	public partial class Users
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Users()
@@ -21,10 +22,24 @@ namespace kredi.Models
         }
     
         public int id { get; set; }
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "El nombre es requirido !")]
         public string names { get; set; }
+
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "Los apellidos son requiridos !")]
         public string surnames { get; set; }
+
+        [DataType(DataType.EmailAddress)]
+        [Required(ErrorMessage = "El correo es requirido !")]
         public string email { get; set; }
+
+        [DataType(DataType.Password)]
+        [Required(ErrorMessage = "La contraseña es requirido !")]
         public string password { get; set; }
+
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "El nombre del local es requirido !")]
         public string nameOfThePlace { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

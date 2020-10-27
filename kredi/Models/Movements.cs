@@ -16,16 +16,25 @@ namespace kredi.Models
     public partial class Movements
     {
         public int id { get; set; }
-        [Required(ErrorMessage = "Error : ingresar fecha")]
+
+        [DataType(DataType.Date)]
+        [Required(ErrorMessage = "La fecha es requirido !")]
         public System.DateTime motionDay { get; set; }
-        [Required(ErrorMessage = "Error : ingresar descripcion")]
+
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "La descripción es requirido !")]
         public string description { get; set; }
-        [Required(ErrorMessage = "Error : ingresar monto")]
+
+        [Range(0, Double.PositiveInfinity, ErrorMessage = "Debe ser un valor positivo !")]
+        [Required(ErrorMessage = "El monto es requirido !")]
         public float movementValue { get; set; }
+
         [Required]
         public bool isMoneyWithdrawal { get; set; }
+
         [Required]
         public float balance { get; set; }
+
         [Required]
         public int LinesOfCredit_id { get; set; }
     

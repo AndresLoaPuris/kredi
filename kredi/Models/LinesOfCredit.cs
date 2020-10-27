@@ -22,20 +22,35 @@ namespace kredi.Models
         }
     
         public int id { get; set; }
-        [Required]
+
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "El nombre del cliente es requirido !")]
         public string customer { get; set; }
-        [Required]
+
+        [Range(0, Double.PositiveInfinity, ErrorMessage = "Debe ser un valor positivo !")]
+        [Required(ErrorMessage = "El limite de crédito es requirido !")]
         public float amount { get; set; }
-        [Required]
+
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "El tipo de moneda es requirido !")]
         public string currency { get; set; }
-        [Required]
+
+        [DataType(DataType.Date)]
+        [Required(ErrorMessage = "La fecha de creación es requirido !")]
         public System.DateTime creationDate { get; set; }
-        [Required]
+
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "El tipo de tasa es requirido !")]
         public string rateType { get; set; }
-        [Required]
+
+        [Range(0, Double.PositiveInfinity, ErrorMessage = "Debe ser un valor positivo !")]
+        [Required(ErrorMessage = "La tasa de interés es requirido !")]
         public float rateValue { get; set; }
-        [Required]
+
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "La capitalización es requirido !")]
         public string capitalization { get; set; }
+
         [Required]
         public int user_id { get; set; }
     

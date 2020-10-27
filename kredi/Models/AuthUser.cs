@@ -10,10 +10,12 @@ namespace kredi.Models
 	{
 		public int Id { get; set; }
 
-		[Required(ErrorMessage = "Error : Ingresar correo")]
+		[DataType(DataType.EmailAddress)]
+		[Required(ErrorMessage = "El correo es requirido !")]
 		public string Email { get; set; }
 
-		[Required(ErrorMessage = "Error : Ingresar contraseña")]
+		[DataType(DataType.Password)]
+		[Required(ErrorMessage = "La contraseña es requirido !")]
 		public string Password { get; set; }
 	}
 }
