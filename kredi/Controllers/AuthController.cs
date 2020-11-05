@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Security;
 using kredi.Controllers.Auth;
 using kredi.Models;
@@ -18,10 +11,12 @@ namespace kredi.Controllers
         private AuthService authService = new AuthService();
         public static string staticEmail { get; set; }
 
+
         public ActionResult Login()
         {
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -39,10 +34,12 @@ namespace kredi.Controllers
             return View();
         }
 
+
         public ActionResult SignUp()
         {
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -60,6 +57,7 @@ namespace kredi.Controllers
             ModelState.AddModelError("", "usuario y/o correo existente");
             return View(users);
         }
+
 
         public ActionResult Logout()
         {

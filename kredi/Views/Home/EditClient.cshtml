@@ -1,6 +1,6 @@
 ﻿@using kredi.Controllers;
 @using kredi.Models;
-
+@model kredi.Models.LinesOfCredit
 
 @{
     Layout = null;
@@ -122,10 +122,12 @@
                                                 </td>
                                                 <td style="display: table-cell;vertical-align: middle;">@item.amount.ToString("0.00") @item.currency</td>
                                                 <td style="display: table-cell;vertical-align: middle;">@item.rateType &nbsp; @item.rateValue %</td>
-                                                <td style="display: table-cell;vertical-align: middle;">
-
-                                                    <a class="btn btn-light btn-xs" href="@Url.Action("EditClient", "Home", new { id = item.id })">
-                                                        Editar
+                                                <td>
+                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark mr-2" title="Editar" href="@Url.Action("EditClient", "LinesOfCredit", new { id = item.id })">
+                                                        <i data-feather="edit"></i>
+                                                    </a>
+                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark mr-2" title="Eliminar">
+                                                        <i data-feather="trash-2"></i>
                                                     </a>
                                                 </td>
 
@@ -146,17 +148,17 @@
         </div>
     </main>
 
-    @using (Ajax.BeginForm("AddClient", "Home", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmEmp" }))
+    @using (Ajax.BeginForm("EditClient", "Home", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmEmp" }))
     {
         <div class="modal fade" id="agregarCliente" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel"><strong>Registrar Cliente</strong></h5>
+                        <h5 class="modal-title" id="staticBackdropLabel"><strong>Editar Cliente</strong></h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" onclick="location.href='@Url.Action("Index", "Home")'">×</span></button>
                     </div>
                     <div class="modal-body" id="frmEmp">
-                        @Html.Partial("_AddClient")
+                        @Html.Partial("_EditClient", Model)
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="location.href='@Url.Action("Index", "Home")'">Cancelar</button>
@@ -166,7 +168,6 @@
             </div>
         </div>
     }
-
 
 
 
@@ -180,6 +181,10 @@
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+    <script>
+        $("#agregarCliente").modal('show');
+    </script>
 </body>
 
 </html>

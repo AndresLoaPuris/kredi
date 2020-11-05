@@ -1,0 +1,20 @@
+﻿{
+  "data":[
+    {
+      "OrderDate": "06/06/2020",
+      "ShipName": "Andres Loa",
+      "OrderID": "23",
+      "Freight": "12345",
+      "ShipCity": "Lima"
+    },
+    {
+      "OrderDate": "06/06/2020",
+      "ShipName": "Andres Loa",
+      "OrderID": "23",
+      "Freight": "12345",
+      "ShipCity": "Lima"
+    }
+  ]
+}
+    
+ 

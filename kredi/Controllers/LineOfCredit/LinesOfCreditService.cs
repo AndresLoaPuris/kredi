@@ -37,7 +37,57 @@ namespace kredi.Controllers.LineOfCredit
 		{
 			return db.LinesOfCredit.Where(x => x.id == id).FirstOrDefault().currency;
 		}
+
+		public class TemplateType
+		{
+			public int Index { get; set; }
+			public string Name { get; set; }
+		}
+
+		public IEnumerable<TemplateType> IEcurrencyType = new List<TemplateType>() {
+				new TemplateType { Index = 0, Name="PEN"},
+				new TemplateType { Index = 1, Name="USD"}
+			}.AsEnumerable();
+
+
+		public float calculatingDebtToPay(int id)
+		{
+			IEnumerable<kredi.Models.Movements> movementsList = allMovements(id);
+			LinesOfCredit linesOfCredit = getLinesOfCreditById(id);
+
+			switch (linesOfCredit.rateType)
+			{
+				case "Tasa de interés Simple Anual":
+
+					break;
+
+				case "Tasa de interés Nominal Anual":
+					int m = 360 / int.Parse(linesOfCredit.capitalization);
+					int n = (System.DateTime.Now.Date - linesOfCredit.creationDate.Date).Days / int.Parse(linesOfCredit.capitalization); // TODO : se redondea ?
+					float sum = 0.0f;
+					foreach (var item in movementsList)
+					{
+						if (item.isMoneyWithdrawal)
+						{
+							sum += Convert.ToSingle(Math.Pow(item.movementValue * (1 + ((linesOfCredit.rateValue / 100) / m)), n));
+						}
+					}
+					return Math.Abs(lastBalance(id)) + sum;
+
+				case "Tasa de interés Efectiva Anual":
+					foreach (var item in movementsList)
+					{
+
+					}
+					break;
+
+			}
+
+			return 0.0f;
+		}
 	}
+
+
 }
 
 // last 5 movements
