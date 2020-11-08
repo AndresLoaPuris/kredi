@@ -110,28 +110,26 @@
 
                                         @foreach (var item in ViewBag.Clients)
                                         {
-                                            <tr>
-                                                <td>
-                                                    <div class="d-flex align-items-center flex-shrink-0 mr-3">
-                                                        <div class="avatar avatar-xl mr-3 bg-gray-200"><img class="avatar-img img-fluid" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ95GrFuesVVuyyfXOSimzstFtyiQ594yP-DNe0UfbUs_kyqqrM&usqp=CAU" alt=""></div>
-                                                        <div class="d-flex flex-column font-weight-bold">
-                                                            <a class="text-dark line-height-normal mb-1" href="@Url.Action("Index", "LinesOfCredit", new { id = item.id })">@item.customer</a>
-                                                            <div class="small text-muted line-height-normal">Id &nbsp;# @item.id</div>
-                                                        </div>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center flex-shrink-0 mr-3">
+                                                    <div class="avatar avatar-xl mr-3 bg-gray-200"><img class="avatar-img img-fluid" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ95GrFuesVVuyyfXOSimzstFtyiQ594yP-DNe0UfbUs_kyqqrM&usqp=CAU" alt=""></div>
+                                                    <div class="d-flex flex-column font-weight-bold">
+                                                        <a class="text-dark line-height-normal mb-1" href="@Url.Action("Index", "LinesOfCredit", new { id = item.id })">@item.customer</a>
+                                                        <div class="small text-muted line-height-normal">Id &nbsp;# @item.id</div>
                                                     </div>
-                                                </td>
-                                                <td style="display: table-cell;vertical-align: middle;">@item.amount.ToString("0.00") @item.currency</td>
-                                                <td style="display: table-cell;vertical-align: middle;">@item.rateType &nbsp; @item.rateValue %</td>
-                                                <td>
-                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark mr-2" title="Editar" href="@Url.Action("EditClient", "LinesOfCredit", new { id = item.id })">
-                                                        <i data-feather="edit"></i>
-                                                    </a>
-                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark mr-2" title="Eliminar">
-                                                        <i data-feather="trash-2"></i>
-                                                    </a>
-                                                </td>
+                                                </div>
+                                            </td>
+                                            <td style="display: table-cell;vertical-align: middle;">@item.amount.ToString("0.00") @item.currency</td>
+                                            <td style="display: table-cell;vertical-align: middle;">@item.rateType @item.rateTime &nbsp; @item.rateValue %</td>
+                                            <td style="display: table-cell;vertical-align: middle;">
 
-                                            </tr>
+                                                <a class="btn btn-light btn-xs" href="@Url.Action("EditClient", "Home", new { id = item.id })">
+                                                    Editar
+                                                </a>
+                                            </td>
+
+                                        </tr>
                                         }
 
                                     </tbody>

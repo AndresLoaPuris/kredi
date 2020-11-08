@@ -11,17 +11,18 @@ namespace kredi.Models
 {
     using System;
     using System.Collections.Generic;
-	using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations;
 
-	public partial class Users
+    public partial class Users
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Users()
         {
             this.LinesOfCredit = new HashSet<LinesOfCredit>();
         }
-    
+
         public int id { get; set; }
+
         [DataType(DataType.Text)]
         [Required(ErrorMessage = "El nombre es requirido !")]
         public string names { get; set; }
@@ -41,7 +42,7 @@ namespace kredi.Models
         [DataType(DataType.Text)]
         [Required(ErrorMessage = "El nombre del local es requirido !")]
         public string nameOfThePlace { get; set; }
-    
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LinesOfCredit> LinesOfCredit { get; set; }
     }

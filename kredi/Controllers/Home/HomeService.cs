@@ -65,9 +65,20 @@ namespace kredi.Controllers.Home
 			}.AsEnumerable();
 
 		public IEnumerable<TemplateType> IErateType = new List<TemplateType>() {
-				new TemplateType { Value = "TSA", Name="Tasa de interés Simple Anual"},
-				new TemplateType { Value = "TNA", Name="Tasa de interés Nominal Anual"},
-				new TemplateType { Value = "TEA", Name="Tasa de interés Efectiva Anual"}
+				new TemplateType { Value = "Simple", Name="Simple"},
+				new TemplateType { Value = "Nominal", Name="Nominal"},
+				new TemplateType { Value = "Efectiva", Name="Efectiva"}
+			}.AsEnumerable();
+
+		public IEnumerable<TemplateType> IErateTime = new List<TemplateType>() {
+				new TemplateType { Value = "1", Name="Diaria"},
+				new TemplateType { Value = "15", Name="Quincenal"},
+				new TemplateType { Value = "30", Name="Mensual"},
+				new TemplateType { Value = "60", Name="Bimestral"},
+				new TemplateType { Value = "90", Name="Trimestal"},
+				new TemplateType { Value = "120", Name="Cuatrimestral"},
+				new TemplateType { Value = "180", Name="Semestral"},
+				new TemplateType { Value = "360", Name="Anual"},
 			}.AsEnumerable();
 	}
 }

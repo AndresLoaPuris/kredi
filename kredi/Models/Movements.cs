@@ -16,7 +16,6 @@ namespace kredi.Models
     public partial class Movements
     {
         public int id { get; set; }
-
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "La fecha es requirido !")]
         public System.DateTime motionDay { get; set; }
@@ -37,7 +36,7 @@ namespace kredi.Models
 
         [Required]
         public int LinesOfCredit_id { get; set; }
-    
+
         public virtual LinesOfCredit LinesOfCredit { get; set; }
     }
 }

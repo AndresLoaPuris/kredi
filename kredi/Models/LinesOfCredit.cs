@@ -22,7 +22,6 @@ namespace kredi.Models
         }
     
         public int id { get; set; }
-
         [DataType(DataType.Text)]
         [Required(ErrorMessage = "El nombre del cliente es requirido !")]
         public string customer { get; set; }
@@ -43,6 +42,10 @@ namespace kredi.Models
         [Required(ErrorMessage = "El tipo de tasa es requirido !")]
         public string rateType { get; set; }
 
+        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "El tiempo de tasa es requirido !")]
+        public string rateTime { get; set; }
+
         [Range(0, Double.PositiveInfinity, ErrorMessage = "Debe ser un valor positivo !")]
         [Required(ErrorMessage = "La tasa de interés es requirido !")]
         public float rateValue { get; set; }
@@ -53,7 +56,7 @@ namespace kredi.Models
 
         [Required]
         public int user_id { get; set; }
-    
+
         public virtual Users Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Movements> Movements { get; set; }

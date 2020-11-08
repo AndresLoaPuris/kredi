@@ -15,6 +15,7 @@
           <Property Name="currency" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="creationDate" Type="date" Nullable="false" />
           <Property Name="rateType" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="rateTime" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="rateValue" Type="real" Nullable="false" />
           <Property Name="capitalization" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="user_id" Type="int" Nullable="false" />
@@ -94,6 +95,7 @@
           <Property Name="currency" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="creationDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="rateType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="rateTime" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="rateValue" Type="Single" Nullable="false" />
           <Property Name="capitalization" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="user_id" Type="Int32" Nullable="false" />
@@ -177,6 +179,7 @@
                 <ScalarProperty Name="currency" ColumnName="currency" />
                 <ScalarProperty Name="creationDate" ColumnName="creationDate" />
                 <ScalarProperty Name="rateType" ColumnName="rateType" />
+                <ScalarProperty Name="rateTime" ColumnName="rateTime" />
                 <ScalarProperty Name="rateValue" ColumnName="rateValue" />
                 <ScalarProperty Name="capitalization" ColumnName="capitalization" />
                 <ScalarProperty Name="user_id" ColumnName="user_id" />

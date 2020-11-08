@@ -15,6 +15,7 @@ namespace kredi.Controllers
 		public ActionResult Index()
 		{
 			ViewBag.rateType = new SelectList(homeService.IErateType, "Name", "Name");
+			ViewBag.rateTime = new SelectList(homeService.IErateTime, "Name", "Name");
 			ViewBag.capitalization = new SelectList(homeService.IEcapitalizationType, "Value", "Name");
 			ViewBag.currency = new SelectList(homeService.IEcurrencyType, "Name", "Name");
 			ViewBag.Clients = homeService.allClients(AuthController.staticEmail);
@@ -26,7 +27,12 @@ namespace kredi.Controllers
 		[ValidateAntiForgeryToken]
 		[HandleError]
 		public ActionResult AddClient(kredi.Models.LinesOfCredit linesOfCredit)
-		{	
+		{
+			if (linesOfCredit.capitalization == null) 
+			{
+				linesOfCredit.capitalization = "no-capitalization";
+			}
+
 			linesOfCredit.user_id = homeService.getIdbyUser(AuthController.staticEmail);
 			homeService.addClient(linesOfCredit);
 			return RedirectToAction("Index");
@@ -37,9 +43,10 @@ namespace kredi.Controllers
 		{
 			kredi.Models.LinesOfCredit linesOfCredit = homeService.getClientById(id);
 			staticCreationDate = linesOfCredit.creationDate;
-			ViewBag.rateType = new SelectList(homeService.IErateType, "Name", "Name");
-			ViewBag.capitalization = new SelectList(homeService.IEcapitalizationType, "Value", "Name");
-			ViewBag.currency = new SelectList(homeService.IEcurrencyType, "Name", "Name");
+			ViewBag.rateType = new SelectList(homeService.IErateType, "Name", "Name",linesOfCredit.rateType);
+			ViewBag.rateTime = new SelectList(homeService.IErateTime, "Name", "Name",linesOfCredit.rateTime);
+			ViewBag.capitalization = new SelectList(homeService.IEcapitalizationType, "Value", "Name",linesOfCredit.capitalization);
+			ViewBag.currency = new SelectList(homeService.IEcurrencyType, "Name", "Name",linesOfCredit.currency);
 			ViewBag.Clients = homeService.allClients(AuthController.staticEmail);
 			return View(linesOfCredit);
 		}
@@ -52,6 +59,11 @@ namespace kredi.Controllers
 		{
 			linesOfCredit.user_id = homeService.getIdbyUser(AuthController.staticEmail);
 			linesOfCredit.creationDate = staticCreationDate;
+			if (linesOfCredit.capitalization == null)
+			{
+				linesOfCredit.capitalization = "no-capitalization";
+			}
+
 			homeService.editClient(linesOfCredit);
 			return RedirectToAction("Index");
 		}
