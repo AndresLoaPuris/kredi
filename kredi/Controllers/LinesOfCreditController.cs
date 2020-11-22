@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using kredi.Controllers.LineOfCredit;
 using kredi.Models;
+using kredi.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,10 +17,15 @@ namespace kredi.Controllers
     {
         private LinesOfCreditService linesOfCreditService = new LinesOfCreditService();
         public static int staticId { get; set; }
+
+        public static bool filtrado { get; set; }
+
+        public static IEnumerable<kredi.Models.Movements> elemtosfiltrados { get; set; }
+
         public static DateTime staticDatePay { get; set; }
         private static float staticDollar { get; set; }
 
-
+        private ChangeService changeService = new ChangeService();
 
         [HttpPost]
         public JsonResult Temporalyu(string datePay)
@@ -33,6 +39,15 @@ namespace kredi.Controllers
         }
 
         
+                [HttpPost]
+        public JsonResult entretiempo(string dayO, string day1)
+        {
+            elemtosfiltrados = linesOfCreditService.allMovementsFilter(staticId, Convert.ToDateTime(dayO).Date, Convert.ToDateTime(day1).Date);
+            filtrado = true;
+            return Json(true);
+
+        }
+
         [HttpPost]
         public JsonResult saldoDisponible(string dataSaldo)
         {
@@ -44,11 +59,27 @@ namespace kredi.Controllers
         public ActionResult Index(int id)
         {
             staticId = id;
-            staticDollar = 3.61f; // TODO
+            staticDollar = changeService.getData("https://app.dollarhouse.pe/calculadora", "//*[@id='buy-exchange-rate']", "//*[@id='sell-exchange-rate']", "Dollar House").buy; ; // TODO
             ViewBag.ToPay = 0.0f;
             ViewBag.Movements = linesOfCreditService.last5Movements(id);
             ViewBag.LinesOfCredit_id = new SelectList(linesOfCreditService.IEcurrencyType, "Index", "Name");
+            filtrado = false;
+            return View();
+        }
 
+
+        public ActionResult Report()
+        {
+            if (filtrado)
+            {
+                ViewBag.Movements = elemtosfiltrados;
+                filtrado = false;
+
+            }
+            else {
+                ViewBag.Movements = linesOfCreditService.allMovements(staticId);
+            }
+            
             return View();
         }
 
@@ -59,6 +90,17 @@ namespace kredi.Controllers
         public ActionResult RegisterExpenditure(kredi.Models.Movements movement)
         {
             movement.movementValue = Convert.ToSingle(Math.Round(movement.movementValue,1));
+
+            if (movement.LinesOfCredit_id == 0 && linesOfCreditService.currencyType(staticId) == "USD")
+            {
+                movement.movementValue = Convert.ToSingle(Math.Round(movement.movementValue / staticDollar, 1));
+            }
+
+            if (movement.LinesOfCredit_id == 1 && linesOfCreditService.currencyType(staticId) == "PEN")
+            {
+                movement.movementValue = Convert.ToSingle(Math.Round(movement.movementValue * staticDollar, 1));
+            }
+
             movement.paymentDate = Convert.ToDateTime("01/01/0001");
             movement.isPaid = false;
             movement.isEnabled = true;
@@ -74,6 +116,18 @@ namespace kredi.Controllers
         {   
             // -- primero : registrar el pago
             movement.movementValue = Convert.ToSingle(Math.Round(movement.movementValue, 1));
+
+            if (movement.LinesOfCredit_id == 0 && linesOfCreditService.currencyType(staticId) == "USD")
+            {
+                movement.movementValue = Convert.ToSingle(Math.Round(movement.movementValue / staticDollar, 1));
+            }
+
+            if (movement.LinesOfCredit_id == 1 && linesOfCreditService.currencyType(staticId) == "PEN")
+            {
+                movement.movementValue = Convert.ToSingle(Math.Round(movement.movementValue * staticDollar, 1));
+            }
+
+
             movement.description = "pago parcial de la cuenta";
             movement.paymentDate = staticDatePay.Date; 
             movement.consumptionDate = staticDatePay.Date; 

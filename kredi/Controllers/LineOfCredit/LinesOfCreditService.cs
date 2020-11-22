@@ -13,7 +13,7 @@ namespace kredi.Controllers.LineOfCredit
 
 		public IEnumerable<kredi.Models.Movements> last5Movements(int id)
 		{
-			return db.Movements.Where(x => x.LinesOfCredit_id == id).OrderByDescending(x => x.id).Take(5);
+			return db.Movements.Where(x => x.LinesOfCredit_id == id && x.isPaid == false).OrderByDescending(x => x.id).Take(5);
 		}
 
 		public float usedCreditLine(int id, DateTime hoy)
@@ -73,7 +73,14 @@ namespace kredi.Controllers.LineOfCredit
 
 		public IEnumerable<kredi.Models.Movements> allMovements(int id)
 		{
-			return db.Movements.Where(x => x.LinesOfCredit_id == id).OrderBy(x => x.consumptionDate);
+			return db.Movements.Where(x => x.LinesOfCredit_id == id).OrderByDescending(x => x.id);
+		}
+
+
+
+		public IEnumerable<kredi.Models.Movements> allMovementsFilter(int id, DateTime date0, DateTime date1)
+		{
+			return db.Movements.Where(x => x.LinesOfCredit_id == id && x.consumptionDate >= date0 && x.consumptionDate <= date1).OrderByDescending(x => x.id);
 		}
 
 		public void addMovement(kredi.Models.Movements movements)

@@ -1,0 +1,284 @@
+﻿@using kredi.Controllers;
+@using kredi.Models;
+
+@{
+    Layout = null;
+    SI642Entities db = new SI642Entities();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Linea de Credito</title>
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script data-search-pseudo-elements defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.24.1/feather.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+
+</head>
+<body class="nav-fixed">
+
+    <nav class="topnav navbar navbar-expand shadow navbar-light bg-white" id="sidenavAccordion">
+        <a class="navbar-brand d-none d-sm-block" href="@Url.Action("Index", "LinesOfCredit", new { id = LinesOfCreditController.staticId })">&nbsp;&nbsp; @db.LinesOfCredit.Find(LinesOfCreditController.staticId).customer</a>
+        <ul class="navbar-nav align-items-center ml-auto">
+            <li class="nav-item dropdown no-caret mr-3 dropdown-user">
+                <span class="mr-2 d-none d-lg-inline text-gray-900 medium">@User.Identity.Name &nbsp;</span>
+                <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img class="img-fluid" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ95GrFuesVVuyyfXOSimzstFtyiQ594yP-DNe0UfbUs_kyqqrM&usqp=CAU" /></a>
+                <div class="dropdown-menu dropdown-menu-right border-0 shadow animated--fade-in-up" aria-labelledby="navbarDropdownUserImage">
+                    <h6 class="dropdown-header d-flex align-items-center">
+                        <img class="dropdown-user-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ95GrFuesVVuyyfXOSimzstFtyiQ594yP-DNe0UfbUs_kyqqrM&usqp=CAU">
+                        <div class="dropdown-user-details">
+                            <div class="dropdown-user-details-name">@User.Identity.Name</div>
+                            <div class="dropdown-user-details-email">@AuthController.staticEmail</div>
+                        </div>
+                    </h6>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href='@Url.Action("Index", "Home")'><div class="dropdown-item-icon"><i data-feather="users"></i></div>Clientes</a>
+                    <a class="dropdown-item" href='@Url.Action("Logout", "Auth")'><div class="dropdown-item-icon"><i data-feather="log-out"></i></div>Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+
+    <main>
+
+        <div class="page-header pb-10 page-header-dark bg-gradient-primary-to-secondary">
+            <div class="container-fluid">
+                <div class="page-header-content" style="text-align:center">
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <p class="page-header-title" style="font-size: 33px;display:inline-block; vertical-align:middle;line-height:normal;" id="totaldaslod">
+                        Reporte de Saldo
+
+                    </p>
+                    <br />
+                    <div style="text-align:center">
+                        <p class="page-header-title" style="font-size: 20px;display:inline-block;vertical-align:middle;margin-top: 10px;
+                                line-height:normal;" id="nameSaldo"></p>
+
+
+                    </div>
+                    <br />
+                    <input type="date" id="reportrangeOne" class="btn btn-white p-2" />
+                    &nbsp;&nbsp;hasta&nbsp;&nbsp;
+                    <input type="date" id="reportrangeTwo" class="btn btn-white p-2" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-pink" type="button" style="font-size: 14px;" onclick="myFunction()">
+                        <i data-feather="filter"></i> &nbsp; Filtar
+                    </button>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-dark" type="button" style="font-size: 14px;" onclick="myFunctionio()">
+                        <i data-feather="archive"></i> &nbsp; Todo
+                    </button>
+                    <br />
+                </div>
+
+            </div>
+
+        </div>
+        
+        <div class="container-fluid mt-n10">
+            <div class="row">
+                <div class="col-lg-4 col-xl-8 mb-4" style="margin-left: auto; margin-right: auto;" id="pdf">
+                    <div class="card card-header-actions mx-auto">
+                        <div class="card-header" style="height: 70px;">
+
+                            <br />
+                            <div>
+                                <button class="btn btn-dark" type="button" style="font-size: 14px;" id="download-jpg">
+                                    <i data-feather="image"></i> &nbsp; JPG
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body" style="margin-left: auto; margin-right: auto;">
+                            <div class="timeline">
+                                @foreach (var item in ViewBag.Movements)
+                                {
+                                    if (!item.isPaid)
+                                    {
+
+
+                                        if (item.description == "deuda a pagar")
+                                        {
+                                            <div class="timeline-item">
+                                                <div class="timeline-item-marker">
+                                                    <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.consumptionDate.ToString("dd MMM yyyy")</div>
+                                                    &nbsp;&nbsp;
+                                                    <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
+                                                        <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="timeline-item-content" style="font-size: 15px;color: black;">
+                                                    &nbsp;&nbsp;
+
+                                                    <strong style="color: red;">
+                                                        cobrar
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;- @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+                                                    </strong>
+                                                    &nbsp;&nbsp; &nbsp;&nbsp;de @item.description
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="timeline-item">
+                                                <div class="timeline-item-marker">
+                                                    <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.consumptionDate.ToString("dd MMM yyyy")</div>
+                                                    &nbsp;&nbsp;
+                                                    <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
+                                                        <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="timeline-item-content" style="font-size: 15px;color: black;">
+                                                    &nbsp;&nbsp;
+
+                                                    <strong style="color: red;">
+                                                        consumo
+                                                        &nbsp;&nbsp;- @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+                                                    </strong>
+                                                    &nbsp;&nbsp; &nbsp;&nbsp;de @item.description
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="timeline-item">
+                                            <div class="timeline-item-marker">
+                                                <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.paymentDate.ToString("dd MMM yyyy")</div>
+                                                &nbsp;&nbsp;
+                                                <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
+                                                    <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
+                                                </div>
+
+                                            </div>
+                                            <div class="timeline-item-content" style="font-size: 15px;color: black;">
+                                                &nbsp;&nbsp;
+                                                <strong>
+                                                    aporte
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+                                                </strong>
+                                                &nbsp;&nbsp; &nbsp;&nbsp;@item.description
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                <div class="timeline-item">
+                                    <div class="timeline-item-marker">
+                                        <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">
+                                            @db.LinesOfCredit.Find(LinesOfCreditController.staticId).creationDate.ToString("dd MMM yyyy")
+
+                                        </div>
+                                        &nbsp;&nbsp;
+                                        <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
+                                            <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
+                                        </div>
+
+                                    </div>
+                                    <div class="timeline-item-content" style="font-size: 15px;color: black;">
+                                        &nbsp;&nbsp;
+                                        <strong>
+                                            inicio
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @db.LinesOfCredit.Find(LinesOfCreditController.staticId).amount @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+                                        </strong>
+                                        &nbsp;&nbsp; &nbsp;&nbsp;creacion de la linea de credito
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="~/js/scripts.js"></script>
+    <script src="~/js/sb-customizer.js"></script>
+    @*<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>*@
+
+
+
+
+
+
+
+
+<script>
+
+        var fechaOne;
+        var fechaTwo;
+
+
+                $('#reportrangeOne').on('change', function () {
+                    fechaOne = $(this).val()
+
+                });
+
+                $('#reportrangeTwo').on('change', function () {
+                    fechaTwo = $(this).val()
+
+                });
+
+        function myFunction() {
+            if (new Date(fechaOne).getTime() < new Date(fechaTwo).getTime()) {
+                $.ajax({
+                    url: '@Url.Action("entretiempo", "LinesOfCredit")',
+                    type: 'POST',
+                    data: { dayO: fechaOne, day1: fechaTwo }, // This is all you have to change
+                    success: function (result) {
+                        location.reload();
+                    }
+                })
+            } else {
+                alert("Ingresar correctamente las fechas")
+            }
+
+
+        }
+
+
+
+            function myFunctionio() {
+           location.reload();
+
+
+        }
+
+
+</script>
+    <script>
+        $('#download-jpg').click(function () {
+            html2canvas($('#pdf'),
+                {
+                    onrendered: function (canvas) {
+                        var a = document.createElement('a');
+                        // toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
+                        a.href = canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream");
+                        a.download = 'image.jpg';
+                        a.click();
+                    }
+                });
+        });
+    </script>
+
+</body>
+
+    </html>

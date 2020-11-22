@@ -100,30 +100,13 @@
 
                                                 if (item.description == "deuda a pagar")
                                                 {
-                                                    <div class="timeline-item">
-                                                        <div class="timeline-item-marker">
-                                                            <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.consumptionDate.ToShortDateString()</div>
-                                                            &nbsp;&nbsp;
-                                                            <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
-                                                                <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
-                                                            </div>
-
-                                                        </div>
-                                                        <div class="timeline-item-content" style="font-size: 15px;color: black;">
-                                                            &nbsp;&nbsp;
-                                                            <strong>
-                                                                falta
-                                                                &nbsp;&nbsp; @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
-                                                            </strong>
-                                                            &nbsp;&nbsp; &nbsp;&nbsp;de @item.description
-                                                        </div>
-                                                    </div>
+                                                    
                                                 }
                                                 else
                                                 {
                                                     <div class="timeline-item">
                                                         <div class="timeline-item-marker">
-                                                            <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.consumptionDate.ToShortDateString()</div>
+                                                            <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.consumptionDate.ToString("dd MMM yyyy")</div>
                                                             &nbsp;&nbsp;
                                                             <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
                                                                 <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
@@ -143,24 +126,7 @@
                                             }
                                             else
                                             {
-                                                <div class="timeline-item">
-                                                    <div class="timeline-item-marker">
-                                                        <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.paymentDate.ToShortDateString()</div>
-                                                        &nbsp;&nbsp;
-                                                        <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
-                                                            <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
-                                                        </div>
-
-                                                    </div>
-                                                    <div class="timeline-item-content" style="font-size: 15px;color: black;">
-                                                        &nbsp;&nbsp;
-                                                        <strong>
-                                                            abono
-                                                            &nbsp;&nbsp; @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
-                                                        </strong>
-                                                        &nbsp;&nbsp; &nbsp;&nbsp;@item.description
-                                                    </div>
-                                                </div>
+                                                
                                             }
                                         }
 
@@ -176,7 +142,7 @@
                                     <p class="text-white-50">Aqui puedes visualizar todos los gastos y pagos realizados en un determinado tiempo.</p>
                                     <img class="float-left" src="/assets/img/drawkit-developer-woman-flush.svg" style="width: 8rem; margin-left: -2.5rem; margin-bottom: -5.5rem;">
                                 </div>
-                                <div class="card-footer bg-transparent pt-0 border-0 text-right" style="color:white"><a class="btn btn-primary">Ir a la pagina</a></div>
+                                <div class="card-footer bg-transparent pt-0 border-0 text-right" style="color:white"><a class="btn btn-primary" href='@Url.Action("Report", "LinesOfCredit")'>Ir a la pagina</a></div>
                             </div>
                         </div>
                     </div>

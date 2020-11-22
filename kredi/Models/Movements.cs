@@ -11,9 +11,9 @@ namespace kredi.Models
 {
     using System;
     using System.Collections.Generic;
-	using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations;
 
-	public partial class Movements
+    public partial class Movements
     {
         public int id { get; set; }
 
