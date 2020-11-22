@@ -1,7 +1,6 @@
 ﻿@using kredi.Controllers;
 @using kredi.Models;
 
-
 @{
     Layout = null;
     SI642Entities db = new SI642Entities();
@@ -42,36 +41,33 @@
             </li>
         </ul>
     </nav>
- 
 
-            <main>
 
-                <div class="page-header pb-10 page-header-dark bg-gradient-primary-to-secondary">
-                    <div class="container-fluid">
-                        <div class="page-header-content" style="text-align:center">
-                            <br />
-                            <br />
-                            <br />
-                            <br />
+    <main>
 
-                            @if (db.Movements.Where(x => x.LinesOfCredit_id == LinesOfCreditController.staticId).FirstOrDefault() != null)
-                            {
-                                <p class="page-header-title" style="font-size: 85px;display:inline-block; vertical-align:middle;line-height:normal;">
-                                    @( (db.LinesOfCredit.Find(LinesOfCreditController.staticId).amount + db.Movements.Where(x => x.LinesOfCredit_id == LinesOfCreditController.staticId && x.id == db.Movements.Where(p => p.LinesOfCredit_id == LinesOfCreditController.staticId).Max(p => p.id)).FirstOrDefault().balance).ToString("0.00") ) @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
-                                </p>
-                            }
-                            else
-                            {
-                                <p class="page-header-title" style="font-size: 85px;display:inline-block; vertical-align:middle;line-height:normal;">
-                                    @db.LinesOfCredit.Find(LinesOfCreditController.staticId).amount.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+        <div class="page-header pb-10 page-header-dark bg-gradient-primary-to-secondary">
+            <div class="container-fluid">
+                <div class="page-header-content" style="text-align:center">
+                    <br />
+                    <br />
+                    <br />
+                    <br />
 
-                                </p>
-                            }
-                            <div style="text-align:center">
-                                <p class="page-header-title" style="font-size: 25px;display:inline-block;vertical-align:middle;margin-top: 10px;
-                                line-height:normal;">Saldo Disponible &nbsp;.&nbsp;@DateTime.Now.ToShortDateString()</p>
+
+                    <p class="page-header-title" style="font-size: 85px;display:inline-block; vertical-align:middle;line-height:normal;" id="totaldaslod">
+                        
+
+                    </p>
+
+                    <div style="text-align:center">
+                        <p class="page-header-title" style="font-size: 20px;display:inline-block;vertical-align:middle;margin-top: 10px;
+                                line-height:normal;" id="nameSaldo">Saldo Disponible</p>
+
 
                             </div>
+                            <br />
+
+                            <input type="date" id="startio" class="btn btn-white p-3">
                             <br />
                         </div>
 
@@ -98,32 +94,58 @@
                                     <div class="timeline">
                                         @foreach (var item in ViewBag.Movements)
                                         {
-                                            if (item.isMoneyWithdrawal)
+                                            if (!item.isPaid)
                                             {
-                                                <div class="timeline-item">
-                                                    <div class="timeline-item-marker">
-                                                        <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.motionDay.ToShortDateString()</div>
-                                                        &nbsp;&nbsp;
-                                                        <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
-                                                            <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
-                                                        </div>
 
+
+                                                if (item.description == "deuda a pagar")
+                                                {
+                                                    <div class="timeline-item">
+                                                        <div class="timeline-item-marker">
+                                                            <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.consumptionDate.ToShortDateString()</div>
+                                                            &nbsp;&nbsp;
+                                                            <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
+                                                                <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="timeline-item-content" style="font-size: 15px;color: black;">
+                                                            &nbsp;&nbsp;
+                                                            <strong>
+                                                                falta
+                                                                &nbsp;&nbsp; @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+                                                            </strong>
+                                                            &nbsp;&nbsp; &nbsp;&nbsp;de @item.description
+                                                        </div>
                                                     </div>
-                                                    <div class="timeline-item-content" style="font-size: 15px;color: black;">
-                                                        &nbsp;&nbsp;
-                                                        <strong>
-                                                            consumo
-                                                            &nbsp;&nbsp; @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
-                                                        </strong>
-                                                        &nbsp;&nbsp; &nbsp;&nbsp;de @item.description
+                                                }
+                                                else
+                                                {
+                                                    <div class="timeline-item">
+                                                        <div class="timeline-item-marker">
+                                                            <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.consumptionDate.ToShortDateString()</div>
+                                                            &nbsp;&nbsp;
+                                                            <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
+                                                                <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="timeline-item-content" style="font-size: 15px;color: black;">
+                                                            &nbsp;&nbsp;
+                                                            <strong>
+                                                                consumo
+                                                                &nbsp;&nbsp; @item.movementValue.ToString("0.00") @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency
+                                                            </strong>
+                                                            &nbsp;&nbsp; &nbsp;&nbsp;de @item.description
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                }
                                             }
                                             else
                                             {
                                                 <div class="timeline-item">
                                                     <div class="timeline-item-marker">
-                                                        <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.motionDay.ToShortDateString()</div>
+                                                        <div class="timeline-item-marker-text" style="width: auto;font-size: 15px;color: black;">@item.paymentDate.ToShortDateString()</div>
                                                         &nbsp;&nbsp;
                                                         <div class="timeline-item-marker-indicator" style="background-color: #E1E9F4;">
                                                             <div class="timeline-item-marker-indicator"><i data-feather="calendar"></i></div>
@@ -161,59 +183,86 @@
                 </div>
             </main>
 
-        
-        @using (Ajax.BeginForm("RegisterExpenditure", "LinesOfCredit", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmExp" }))
-        {
-            <div class="modal fade" id="registrarGasto" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel"><strong>Registrar Gasto</strong></h5>
-                            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">×</span></button>
-                        </div>
-                        <div class="modal-body" id="frmExp">
-                            @Html.Partial("_RegisterExpenditure")
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">Cancelar</button>
-                            <button class="btn btn-primary" type="submit">Confirmar</button>
+
+            @using (Ajax.BeginForm("RegisterExpenditure", "LinesOfCredit", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmExp" }))
+            {
+                <div class="modal fade" id="registrarGasto" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel"><strong>Registrar Gasto</strong></h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">×</span></button>
+                            </div>
+                            <div class="modal-body" id="frmExp">
+                                @Html.Partial("_RegisterExpenditure")
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">Cancelar</button>
+                                <button class="btn btn-primary" type="submit">Confirmar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-        }
+            }
 
-        @using (Ajax.BeginForm("RegisterPayment", "LinesOfCredit", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmPay" }))
-        {
-            <div class="modal fade" id="registrarPago" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel"><strong>Registrar Pago</strong></h5>
-                            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">×</span></button>
+
+            @using (Ajax.BeginForm("RegisterPayment", "LinesOfCredit", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmPay" }))
+            {
+                <div class="modal fade" id="registrarPago" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel"><strong>Registrar Pago</strong></h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">×</span></button>
+                            </div>
+                            <div class="modal-body" id="frmPay">
+                                @Html.Partial("_RegisterPayment")
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">Cancelar</button>
+                                <button class="btn btn-primary" type="submit">Confirmar</button>
+                            </div>
+
+
                         </div>
-                        <div class="modal-body" id="frmPay">
-                            @Html.Partial("_RegisterPayment")
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="location.href='@Url.Action("Index", "LinesOfCredit",new { id = LinesOfCreditController.staticId})'">Cancelar</button>
-                            <button class="btn btn-primary" type="submit">Confirmar</button>
-                        </div>
-
-
                     </div>
                 </div>
-            </div>
-        }
+            }
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+            <script src="~/js/scripts.js"></script>
+            <script src="~/js/sb-customizer.js"></script>
+            <script src="~/Scripts/jquery.validate.min.js"></script>
+            <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+            @*<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>*@
 
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="~/js/scripts.js"></script>
-        <script src="~/js/sb-customizer.js"></script>
-        <script src="~/Scripts/jquery.validate.min.js"></script>
-        <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-</body>
 
-</html>
+            <script>
+
+
+
+                $('#startio').on('change', function () {
+
+                    
+                    var fecha = new Date($(this).val())
+                    fecha.setDate(fecha.getDate() + 1)
+
+            $.ajax({
+                url: '@Url.Action("saldoDisponible", "LinesOfCredit")',
+                type: 'POST',
+                data: { dataSaldo: $(this).val() }, // This is all you have to change  
+                success: function (result) {
+                    document.getElementById('totaldaslod').innerHTML = result;
+                    options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    document.getElementById('nameSaldo').innerHTML = `Saldo Disponible &nbsp;.&nbsp; ${fecha.toLocaleDateString('es-ES', options)}`;
+                }
+            })
+
+
+
+        });
+            </script>
+        </body>
+
+    </html>

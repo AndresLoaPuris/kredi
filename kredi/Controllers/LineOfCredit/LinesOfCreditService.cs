@@ -1,6 +1,7 @@
 ﻿using kredi.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
@@ -12,21 +13,75 @@ namespace kredi.Controllers.LineOfCredit
 
 		public IEnumerable<kredi.Models.Movements> last5Movements(int id)
 		{
-			return db.Movements.Where(x => x.LinesOfCredit_id == id).OrderByDescending(x => x.motionDay).Take(5);
+			return db.Movements.Where(x => x.LinesOfCredit_id == id).OrderByDescending(x => x.id).Take(5);
 		}
+
+		public float usedCreditLine(int id, DateTime hoy)
+		{
+			
+			List<kredi.Models.Movements> movementsDue = db.Movements.Where(x => x.LinesOfCredit_id == id && x.isPaid == false && x.consumptionDate <= hoy && x.isEnabled == true).ToList();
+
+			float amountDue = 0.0f;
+			foreach (var item in movementsDue) {
+				amountDue += item.movementValue;
+			}
+
+			float amountLineOfCredit = db.LinesOfCredit.Where(x => x.id == id).FirstOrDefault().amount;
+			
+			return (amountLineOfCredit - amountDue);
+		}
+
+
+		private float calculateInterest(int _movement, int LineOfCredit, DateTime datePay) { 
+			// TODO
+			var lineOfCredit = db.LinesOfCredit.Find(LineOfCredit);
+			var movement = db.Movements.Find(_movement);
+			
+
+			return 5.0f;
+		}
+
+		public float amountToBePaid(int LineOfCredit, DateTime datePay)
+		{
+			
+			List<kredi.Models.Movements> movementsDue = db.Movements.Where(x => x.LinesOfCredit_id == LineOfCredit && x.isPaid == false && x.consumptionDate <= datePay && x.isEnabled == true).ToList();
+
+			float amountDue = 0.0f;
+			foreach (var item in movementsDue)
+			{
+				amountDue += (item.movementValue + calculateInterest(item.id,LineOfCredit,datePay));
+			}
+			return amountDue;
+		}
+
+
+		public List<kredi.Models.Movements> movementsToCancel(int LineOfCredit, DateTime datePay)
+		{
+			
+			var movementsDue = db.Movements.Where(x => x.LinesOfCredit_id == LineOfCredit && x.isPaid == false && x.consumptionDate <= datePay && x.isEnabled == true).ToList();
+
+			return movementsDue;
+		}
+
+		public void editMovements(kredi.Models.Movements movement)
+		{
+
+			db.Entry(movement).State = EntityState.Modified;
+			db.SaveChanges();
+		}
+
+
 		public IEnumerable<kredi.Models.Movements> allMovements(int id)
 		{
-			return db.Movements.Where(x => x.LinesOfCredit_id == id).OrderBy(x => x.motionDay);
+			return db.Movements.Where(x => x.LinesOfCredit_id == id).OrderBy(x => x.consumptionDate);
 		}
+
 		public void addMovement(kredi.Models.Movements movements)
 		{
 			db.Movements.Add(movements);
 			db.SaveChanges();
 		}
-		public float lastBalance(int id)
-		{
-			return db.Movements.Where(x => x.LinesOfCredit_id == id && x.id == db.Movements.Where(p => p.LinesOfCredit_id == id).Max(p => p.id)).FirstOrDefault().balance ;
-		}
+		
 
 		public LinesOfCredit getLinesOfCreditById(int id)
 		{
@@ -48,46 +103,8 @@ namespace kredi.Controllers.LineOfCredit
 				new TemplateType { Index = 0, Name="PEN"},
 				new TemplateType { Index = 1, Name="USD"}
 			}.AsEnumerable();
-
-
-		public float calculatingDebtToPay(int id)
-		{
-			IEnumerable<kredi.Models.Movements> movementsList = allMovements(id);
-			LinesOfCredit linesOfCredit = getLinesOfCreditById(id);
-
-			switch (linesOfCredit.rateType)
-			{
-				case "Tasa de interés Simple Anual":
-
-					break;
-
-				case "Tasa de interés Nominal Anual":
-					int m = 360 / int.Parse(linesOfCredit.capitalization);
-					int n = (System.DateTime.Now.Date - linesOfCredit.creationDate.Date).Days / int.Parse(linesOfCredit.capitalization); // TODO : se redondea ?
-					float sum = 0.0f;
-					foreach (var item in movementsList)
-					{
-						if (item.isMoneyWithdrawal)
-						{
-							sum += Convert.ToSingle(Math.Pow(item.movementValue * (1 + ((linesOfCredit.rateValue / 100) / m)), n));
-						}
-					}
-					return Math.Abs(lastBalance(id)) + sum;
-
-				case "Tasa de interés Efectiva Anual":
-					foreach (var item in movementsList)
-					{
-
-					}
-					break;
-
-			}
-
-			return 0.0f;
-		}
 	}
 
 
 }
 
-// last 5 movements

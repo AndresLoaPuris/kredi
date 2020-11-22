@@ -148,12 +148,16 @@
 
     @using (Ajax.BeginForm("AddClient", "Home", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmEmp" }))
     {
+
+       
+
         <div class="modal fade" id="agregarCliente" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel"><strong>Registrar Cliente</strong></h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" onclick="location.href='@Url.Action("Index", "Home")'">×</span></button>
+                        
                     </div>
                     <div class="modal-body" id="frmEmp">
                         @Html.Partial("_AddClient")
@@ -165,6 +169,9 @@
                 </div>
             </div>
         </div>
+
+
+
     }
 
 

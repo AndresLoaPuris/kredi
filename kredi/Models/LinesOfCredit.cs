@@ -11,16 +11,16 @@ namespace kredi.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
+	using System.ComponentModel.DataAnnotations;
 
-    public partial class LinesOfCredit
+	public partial class LinesOfCredit
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LinesOfCredit()
         {
             this.Movements = new HashSet<Movements>();
         }
-    
+
         public int id { get; set; }
         [DataType(DataType.Text)]
         [Required(ErrorMessage = "El nombre del cliente es requirido !")]
@@ -56,6 +56,8 @@ namespace kredi.Models
 
         [Required]
         public int user_id { get; set; }
+
+
 
         public virtual Users Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

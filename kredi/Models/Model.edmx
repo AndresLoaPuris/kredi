@@ -25,11 +25,12 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="motionDay" Type="date" Nullable="false" />
+          <Property Name="consumptionDate" Type="date" Nullable="false" />
+          <Property Name="paymentDate" Type="date" Nullable="false" />
           <Property Name="description" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="movementValue" Type="real" Nullable="false" />
-          <Property Name="isMoneyWithdrawal" Type="bit" Nullable="false" />
-          <Property Name="balance" Type="real" Nullable="false" />
+          <Property Name="isPaid" Type="bit" Nullable="false" />
+          <Property Name="isEnabled" Type="bit" Nullable="false" />
           <Property Name="LinesOfCredit_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
@@ -107,11 +108,12 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="motionDay" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="consumptionDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="paymentDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="movementValue" Type="Single" Nullable="false" />
-          <Property Name="isMoneyWithdrawal" Type="Boolean" Nullable="false" />
-          <Property Name="balance" Type="Single" Nullable="false" />
+          <Property Name="isPaid" Type="Boolean" Nullable="false" />
+          <Property Name="isEnabled" Type="Boolean" Nullable="false" />
           <Property Name="LinesOfCredit_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="LinesOfCredit" Relationship="Self.Movements_LinesOfCredit" FromRole="Movements" ToRole="LinesOfCredit" />
         </EntityType>
@@ -190,11 +192,12 @@
             <EntityTypeMapping TypeName="SI642Model.Movements">
               <MappingFragment StoreEntitySet="Movements">
                 <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="motionDay" ColumnName="motionDay" />
+                <ScalarProperty Name="consumptionDate" ColumnName="consumptionDate" />
+                <ScalarProperty Name="paymentDate" ColumnName="paymentDate" />
                 <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="movementValue" ColumnName="movementValue" />
-                <ScalarProperty Name="isMoneyWithdrawal" ColumnName="isMoneyWithdrawal" />
-                <ScalarProperty Name="balance" ColumnName="balance" />
+                <ScalarProperty Name="isPaid" ColumnName="isPaid" />
+                <ScalarProperty Name="isEnabled" ColumnName="isEnabled" />
                 <ScalarProperty Name="LinesOfCredit_id" ColumnName="LinesOfCredit_id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -11,14 +11,19 @@ namespace kredi.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
+	using System.ComponentModel.DataAnnotations;
 
-    public partial class Movements
+	public partial class Movements
     {
         public int id { get; set; }
+
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "La fecha es requirido !")]
-        public System.DateTime motionDay { get; set; }
+        public System.DateTime consumptionDate { get; set; }
+
+        [DataType(DataType.Date)]
+        [Required(ErrorMessage = "La fecha es requirido !")]
+        public System.DateTime paymentDate { get; set; }
 
         [DataType(DataType.Text)]
         [Required(ErrorMessage = "La descripción es requirido !")]
@@ -29,10 +34,10 @@ namespace kredi.Models
         public float movementValue { get; set; }
 
         [Required]
-        public bool isMoneyWithdrawal { get; set; }
+        public bool isPaid { get; set; }
 
         [Required]
-        public float balance { get; set; }
+        public bool isEnabled { get; set; }
 
         [Required]
         public int LinesOfCredit_id { get; set; }

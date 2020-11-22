@@ -21,6 +21,7 @@ namespace kredi.Controllers.Home
 			return db.LinesOfCredit.Where(x => x.Users.email == emailUser);
 		}
 
+
 		public kredi.Models.LinesOfCredit getClientById(int id)
 		{
 			return db.LinesOfCredit.Find(id);

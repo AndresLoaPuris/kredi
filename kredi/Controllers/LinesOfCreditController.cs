@@ -3,9 +3,11 @@ using kredi.Controllers.LineOfCredit;
 using kredi.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace kredi.Controllers
 {
@@ -14,16 +16,39 @@ namespace kredi.Controllers
     {
         private LinesOfCreditService linesOfCreditService = new LinesOfCreditService();
         public static int staticId { get; set; }
+        public static DateTime staticDatePay { get; set; }
         private static float staticDollar { get; set; }
 
+
+
+        [HttpPost]
+        public JsonResult Temporalyu(string datePay)
+        {
+            staticDatePay = Convert.ToDateTime(datePay);
+            string data = linesOfCreditService.amountToBePaid(staticId, staticDatePay).ToString() + "  " + linesOfCreditService.currencyType(staticId);
+
+
+            return Json(data);
+            
+        }
+
+        
+        [HttpPost]
+        public JsonResult saldoDisponible(string dataSaldo)
+        {
+           
+            return Json(linesOfCreditService.usedCreditLine(staticId, Convert.ToDateTime(dataSaldo).Date).ToString("0.00") + "  "+ linesOfCreditService.currencyType(staticId));
+
+        }
 
         public ActionResult Index(int id)
         {
             staticId = id;
             staticDollar = 3.61f; // TODO
-            ViewBag.ToPay = linesOfCreditService.calculatingDebtToPay(id); // TODO
+            ViewBag.ToPay = 0.0f;
             ViewBag.Movements = linesOfCreditService.last5Movements(id);
             ViewBag.LinesOfCredit_id = new SelectList(linesOfCreditService.IEcurrencyType, "Index", "Name");
+
             return View();
         }
 
@@ -31,58 +56,71 @@ namespace kredi.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HandleError]
-        public ActionResult RegisterExpenditure(kredi.Models.Movements movements)
+        public ActionResult RegisterExpenditure(kredi.Models.Movements movement)
         {
-            if (linesOfCreditService.allMovements(staticId).Count() != 0) {
-                movements.balance = linesOfCreditService.lastBalance(staticId);
-            }
-            
-            movements.isMoneyWithdrawal = true;
-
-            if (movements.LinesOfCredit_id == 0 && linesOfCreditService.currencyType(staticId) == "USD")
-            {
-                movements.movementValue = movements.movementValue / staticDollar;
-            }
-
-            if (movements.LinesOfCredit_id == 1 && linesOfCreditService.currencyType(staticId) == "PEN")
-            {
-                movements.movementValue = movements.movementValue * staticDollar;
-            }
-
-            movements.balance += (movements.movementValue)*-1;
-            movements.LinesOfCredit_id = staticId;
-            linesOfCreditService.addMovement(movements);
+            movement.movementValue = Convert.ToSingle(Math.Round(movement.movementValue,1));
+            movement.paymentDate = Convert.ToDateTime("01/01/0001");
+            movement.isPaid = false;
+            movement.isEnabled = true;
+            movement.LinesOfCredit_id = staticId;
+            linesOfCreditService.addMovement(movement);
             return RedirectToAction("Index", new { id = staticId });
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HandleError]
-        public ActionResult RegisterPayment(kredi.Models.Movements movements)
-        {
-            if (linesOfCreditService.allMovements(staticId).Count() != 0)
-            {
-                movements.balance = linesOfCreditService.lastBalance(staticId);
-            }
-            movements.isMoneyWithdrawal = false;
+        public ActionResult RegisterPayment(kredi.Models.Movements movement)
+        {   
+            // -- primero : registrar el pago
+            movement.movementValue = Convert.ToSingle(Math.Round(movement.movementValue, 1));
+            movement.description = "pago parcial de la cuenta";
+            movement.paymentDate = staticDatePay.Date; 
+            movement.consumptionDate = staticDatePay.Date; 
+            movement.isPaid = true;
+            movement.isEnabled = true;
+            movement.LinesOfCredit_id = staticId;
+            linesOfCreditService.addMovement(movement);
 
-            if (movements.LinesOfCredit_id == 0 && linesOfCreditService.currencyType(staticId) == "USD")
+
+            // -- segundo : registrar "nuevo produtco " si falta pagar 
+            if (movement.movementValue < linesOfCreditService.amountToBePaid(staticId, staticDatePay))
             {
-                movements.movementValue = movements.movementValue / staticDollar;
+                kredi.Models.Movements new_movement = new Movements();
+                new_movement.movementValue = Convert.ToSingle(Math.Round(linesOfCreditService.amountToBePaid(staticId, staticDatePay) - movement.movementValue, 1));
+                new_movement.description = "deuda a pagar";
+                new_movement.paymentDate = Convert.ToDateTime("01/01/0001");
+                new_movement.consumptionDate = staticDatePay; 
+                new_movement.isPaid = false;
+                new_movement.isEnabled = true;
+                new_movement.LinesOfCredit_id = staticId;
+                linesOfCreditService.addMovement(new_movement);
+
+
+                var movementsToCancel = linesOfCreditService.movementsToCancel(staticId, staticDatePay);
+                for (int i = 0; i < movementsToCancel.Count() - 1; i++)
+                {
+                    movementsToCancel[i].paymentDate = staticDatePay.Date; 
+                    movementsToCancel[i].isEnabled = false;
+                    linesOfCreditService.editMovements(movementsToCancel[i]);
+                }
+            }
+            else{
+                var movementsToCancel = linesOfCreditService.movementsToCancel(staticId, staticDatePay);
+                for (int i = 0; i < movementsToCancel.Count(); i++)
+                {
+                    movementsToCancel[i].paymentDate = staticDatePay.Date; 
+                    movementsToCancel[i].isEnabled = false;
+                    linesOfCreditService.editMovements(movementsToCancel[i]);
+                }
             }
 
-            if (movements.LinesOfCredit_id == 1 && linesOfCreditService.currencyType(staticId) == "PEN")
-            {
-                movements.movementValue = movements.movementValue * staticDollar;
-            }
+            // tercero : cambiar los estados a true de los movimeintos a hoy
 
-            movements.motionDay = System.DateTime.Now.Date;
-            movements.balance += movements.movementValue;
-            movements.LinesOfCredit_id = staticId;
-            movements.description = "ingreso de efectivo a la cuenta";
-            linesOfCreditService.addMovement(movements);
+           
+           
             return RedirectToAction("Index", new { id = staticId });
         }
+
     }
 }

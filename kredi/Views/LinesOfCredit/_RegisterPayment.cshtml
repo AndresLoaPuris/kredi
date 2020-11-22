@@ -8,34 +8,72 @@
     SI642Entities db = new SI642Entities();
 }
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+
 <div style="text-align:center">
     <label class="small mb-1" for="inputEmailAddress" style="font-size: 45px;display:inline-block;vertical-align:middle;margin-top: 25px;
-                                line-height:normal;text-align:center"><strong>@ViewBag.ToPay @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency</strong></label>
-                            </div>
-                            <div style="text-align:center">
-                                <label class="small mb-1" for="inputEmailAddress" style="font-size: 15px;display:inline-block;vertical-align:middle;
+                                line-height:normal;text-align:center">
+        <strong id="ToPay">@ViewBag.ToPay @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency</strong>
+    </label>
+</div>
+<div style="text-align:center">
+    <label class="small mb-1" for="inputEmailAddress" style="font-size: 15px;display:inline-block;vertical-align:middle;
                                 line-height:normal;text-align:center">dueda por pagar</label>
-                            </div>
-                            <br />
-                            <br />
-                            <div class="form-row">
-                                <div class="col-md-6">
-                                    <!-- Form Group (first name)-->
-                                    <div class="form-group">
-                                        <label class="small mb-1" for="inputFirstName">Monto</label>
-                                        @Html.EditorFor(model => model.movementValue, new { htmlAttributes = new { @class = "form-control form-control-solid py-4", @type = "number", @step = "any" } })
-                                        @Html.ValidationMessageFor(model => model.movementValue, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <!-- Form Group (last name)-->
-                                    <div class="form-group">
+</div>
+<br />
+<br />
+<div class="form-row">
 
-                                        <label class="small mb-1" for="inputLastName">Moneda</label>
-                                        @Html.DropDownList("LinesOfCredit_id", null, htmlAttributes: new { @class = "form-control form-control-solid", @style = "color: black;" })
-                                        @Html.ValidationMessageFor(model => model.LinesOfCredit_id, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                           
+    <div class="col-md-12">
+        <div class="form-group">
+            <label class="small mb-1" for="inputLastName">Fecha</label>
+            @Html.EditorFor(model => model.consumptionDate, new { htmlAttributes = new { @class = "form-control form-control-solid py-4", @type = "date", @id = "fuck" } })
+            @Html.ValidationMessageFor(model => model.consumptionDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-6">
+        <!-- Form Group (first name)-->
+        <div class="form-group">
+            <label class="small mb-1" for="inputFirstName">Monto</label>
+            @Html.EditorFor(model => model.movementValue, new { htmlAttributes = new { @class = "form-control form-control-solid py-4", @type = "number", @step = "any" } })
+            @Html.ValidationMessageFor(model => model.movementValue, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-6">
+        <!-- Form Group (last name)-->
+        <div class="form-group">
 
+            <label class="small mb-1" for="inputLastName">Moneda</label>
+            @Html.DropDownList("LinesOfCredit_id", null, htmlAttributes: new { @class = "form-control form-control-solid", @style = "color: black;" })
+            @Html.ValidationMessageFor(model => model.LinesOfCredit_id, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+
+        $('#fuck').on('change', function () {
+
+            //alert($(this).val());
+
+            $.ajax({
+                url: '@Url.Action("Temporalyu", "LinesOfCredit")',
+                type: 'POST',
+                data: { datePay: $(this).val() }, // This is all you have to change
+                success: function (result) {
+
+                    document.getElementById('ToPay').innerHTML = result;
+                }
+            })
+
+
+
+        });
+</script>
