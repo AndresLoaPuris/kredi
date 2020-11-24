@@ -79,8 +79,16 @@
 
     <script>
 
+        if ($('#IdrateType').val() == "Efectiva" || $('#IdrateType').val() == "Simple") {
+            document.getElementById("Idcapitalization").disabled = true;
+        } else {
+            document.getElementById("Idcapitalization").disabled = false;
+
+        }
+
+
         $('#IdrateType').on('change', function () {
-            if ($(this).val() == "Efectiva") {
+            if ($(this).val() == "Efectiva" || $(this).val() == "Simple" ) {
                 document.getElementById("Idcapitalization").disabled = true;
             } else {
                 document.getElementById("Idcapitalization").disabled = false;

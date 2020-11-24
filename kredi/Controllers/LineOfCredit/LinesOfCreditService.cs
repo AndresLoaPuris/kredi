@@ -31,14 +31,101 @@ namespace kredi.Controllers.LineOfCredit
 			return (amountLineOfCredit - amountDue);
 		}
 
+		static int rateTimeToDays(string rateTime)
+		{
+			int days = 0;
+
+			if (rateTime == "Anual")
+			{
+				days = 360;
+			}
+			else if (rateTime == "Semestral")
+			{
+				days = 180;
+			}
+			else if (rateTime == "Cuatrimestral")
+			{
+				days = 120;
+			}
+			else if (rateTime == "Trimestral")
+			{
+				days = 90;
+			}
+			else if (rateTime == "Bimestral")
+			{
+				days = 60;
+			}
+			else if (rateTime == "Mensual")
+			{
+				days = 30;
+			}
+			else if (rateTime == "Quincenal")
+			{
+				days = 15;
+			}
+			else if (rateTime == "Semanal")
+			{
+				days = 7;
+			}
+			else if (rateTime == "Diaria")
+			{
+				days = 1;
+			}
+			return days;
+		}
 
 		private float calculateInterest(int _movement, int LineOfCredit, DateTime datePay) { 
 			// TODO
 			var lineOfCredit = db.LinesOfCredit.Find(LineOfCredit);
 			var movement = db.Movements.Find(_movement);
+
+			float interest = 0.0f;
+			float C = movement.movementValue;
+			float i = 0.0f;
+			if (lineOfCredit.rateType == "Simple")
+			{
+				i = (lineOfCredit.rateValue*(360/ rateTimeToDays(lineOfCredit.rateTime))) / 100.0f;
+
+			}
+			else {
+				i = lineOfCredit.rateValue / 100.0f;
+
+			}
+			TimeSpan tSpan = datePay - movement.consumptionDate;
+			int days_passed = tSpan.Days;
+
+			float n = 0.0f;
+			float m = 0.0f;
+
+			float NT = lineOfCredit.rateValue / 100.0f;
+
+			if (!(lineOfCredit.rateType == "Efectiva" || lineOfCredit.rateType == "Simple")) {
+				n = (float)days_passed / float.Parse(lineOfCredit.capitalization);
+				m = (float)rateTimeToDays(lineOfCredit.rateTime) / float.Parse(lineOfCredit.capitalization);
+			}
 			
 
-			return 5.0f;
+			float TEP = lineOfCredit.rateValue / 100.0f;
+			int daysTEP = rateTimeToDays(lineOfCredit.rateTime);
+
+			if (lineOfCredit.rateType == "Nominal")
+			{
+
+				interest = C * Convert.ToSingle(Math.Pow((1 + (NT / m)), n)) - C;
+			}
+			else if (lineOfCredit.rateType == "Simple")
+			{
+				interest = C * i * (days_passed / 360.0f);
+			}
+			else if (lineOfCredit.rateType == "Efectiva")
+			{
+				
+				interest = C * Convert.ToSingle(Math.Pow((1 + TEP), ((float)days_passed / (float)daysTEP))) - C;
+			}
+
+			return Convert.ToSingle(Math.Round(interest, 1)); ;
+
+			
 		}
 
 		public float amountToBePaid(int LineOfCredit, DateTime datePay)

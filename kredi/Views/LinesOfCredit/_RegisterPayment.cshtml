@@ -15,7 +15,8 @@
 <div style="text-align:center">
     <label class="small mb-1" for="inputEmailAddress" style="font-size: 45px;display:inline-block;vertical-align:middle;margin-top: 25px;
                                 line-height:normal;text-align:center">
-        <strong id="ToPay">@ViewBag.ToPay @db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency</strong>
+        <strong id="ToPay">@ViewBag.ToPay</strong>
+        <strong>@db.LinesOfCredit.Find(LinesOfCreditController.staticId).currency</strong>
     </label>
 </div>
 <div style="text-align:center">
@@ -69,7 +70,7 @@
                 data: { datePay: $(this).val() }, // This is all you have to change
                 success: function (result) {
 
-                    document.getElementById('ToPay').innerHTML = result;
+                    document.getElementById('ToPay').innerHTML = Number.parseFloat(result).toFixed(2);
                 }
             })
 

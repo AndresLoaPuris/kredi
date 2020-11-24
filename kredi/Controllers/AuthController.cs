@@ -1,4 +1,7 @@
-﻿using System.Web.Mvc;
+﻿
+using System.Net;
+using System.Net.Mail;
+using System.Web.Mvc;
 using System.Web.Security;
 using kredi.Controllers.Auth;
 using kredi.Models;
@@ -34,6 +37,39 @@ namespace kredi.Controllers
             return View();
         }
 
+        public ActionResult passwordRecovery()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult passwordRecovery(AuthUser authUser)
+        {
+            if (authService.getEmailExists(authUser))
+            {
+                string password = authService.getPassword(authUser);
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.From = new MailAddress("company.kredi@gmail.com");
+                mailMessage.To.Add(authUser.Email);
+                mailMessage.Subject = ("Recuperación de su contraseña");
+                mailMessage.Body = "¡Pero no te preocupes! Aqui esta su contraseña para el uso de nuestra aplicación Kredi : " + password;
+                mailMessage.Priority = MailPriority.Normal;
+
+                SmtpClient smtpClient = new SmtpClient();
+                smtpClient.Credentials = new NetworkCredential("company.kredi@gmail.com", "CompanyKredi#1");
+                smtpClient.Host = "smtp.gmail.com";
+                smtpClient.Port = 587;
+                smtpClient.EnableSsl = true;
+                smtpClient.Send(mailMessage);
+
+                return RedirectToAction("Login");
+                
+            }
+
+            ModelState.AddModelError("", "correo no existente");
+            return View();
+        }
 
         public ActionResult SignUp()
         {
